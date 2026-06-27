@@ -1,34 +1,34 @@
-# COBOL 應用程式測試計劃
+# COBOL Application Test Plan
 
-此測試計劃涵蓋目前 COBOL 應用程式中的所有業務邏輯，並提供驗證節點以支援將應用程式轉換為 Node.js 時的單元與整合測試。
+This test plan covers the current COBOL application business logic and implementation. It is designed for stakeholder validation and can later be used to create unit and integration tests in a Node.js application.
 
-| 測試用例ID | 測試用例描述 | 前提條件 | 測試步驟 | 預期結果 | 實際結果 | 狀態（通過/失敗） | 評論 |
+| Test Case ID | Test Case Description | Pre-conditions | Test Steps | Expected Result | Actual Result | Status (Pass/Fail) | Comments |
 |---|---|---|---|---|---|---|---|
-| TC-01 | 檢視帳戶餘額 | 應用程式已啟動，初始帳戶餘額為 `1000.00` | 1. 啟動程式
-2. 輸入選項 `1` | 顯示目前帳戶餘額為 `1000.00` |  |  |  |
-| TC-02 | 存款金額到帳戶 | 應用程式已啟動，初始帳戶餘額為 `1000.00` | 1. 啟動程式
-2. 輸入選項 `2`
-3. 輸入 `200.00` | 顯示「Amount credited. New balance: 1200.00」且帳戶餘額更新為 `1200.00` |  |  |  |
-| TC-03 | 提款成功 | 帳戶餘額至少為 `500.00` | 1. 啟動程式
-2. 輸入選項 `3`
-3. 輸入 `500.00` | 顯示「Amount debited. New balance: 500.00」且帳戶餘額更新為 `500.00` |  |  |  |
-| TC-04 | 提款餘額不足 | 帳戶餘額為 `100.00` | 1. 啟動程式
-2. 輸入選項 `3`
-3. 輸入 `200.00` | 顯示「Insufficient funds for this debit.」且帳戶餘額維持 `100.00` |  |  |  |
-| TC-05 | 非法選項處理 | 應用程式已啟動 | 1. 啟動程式
-2. 輸入選項 `5` 或任意非 1-4 整數 | 顯示「Invalid choice, please select 1-4.」並繼續顯示選單 |  |  |  |
-| TC-06 | 離開程式 | 應用程式已啟動 | 1. 啟動程式
-2. 輸入選項 `4` | 顯示「Exiting the program. Goodbye!」並結束程式 |  |  |  |
-| TC-07 | 資料存取分離驗證 | 應用程式已啟動 | 1. 執行任一查詢/存款/提款操作
-2. 確認操作透過 `DataProgram` 讀寫帳戶資料 | `Operations` 應呼叫 `DataProgram` 進行 `READ` 或 `WRITE`，且帳戶餘額由 `DataProgram` 維護 |  |  |  |
-| TC-08 | 初始餘額一致性 | 應用程式首次執行 | 1. 啟動程式
-2. 輸入選項 `1` | 顯示初始餘額 `1000.00` |  |  |  |
+| TC-01 | View account balance | Application is running with initial balance `1000.00` | 1. Start the program
+2. Enter option `1` | Display current balance `1000.00` |  |  |  |
+| TC-02 | Credit account balance | Application is running with initial balance `1000.00` | 1. Start the program
+2. Enter option `2`
+3. Enter `200.00` | Display `Amount credited. New balance: 1200.00` and update balance to `1200.00` |  |  |  |
+| TC-03 | Debit account successfully | Application is running with balance `1000.00` or more | 1. Start the program
+2. Enter option `3`
+3. Enter `500.00` | Display `Amount debited. New balance: 500.00` and update balance to `500.00` |  |  |  |
+| TC-04 | Debit with insufficient funds | Application is running with balance `100.00` | 1. Start the program
+2. Enter option `3`
+3. Enter `200.00` | Display `Insufficient funds for this debit.` and keep balance at `100.00` |  |  |  |
+| TC-05 | Handle invalid menu option | Application is running | 1. Start the program
+2. Enter option `5` or any invalid choice | Display `Invalid choice, please select 1-4.` and continue showing the menu |  |  |  |
+| TC-06 | Exit the program | Application is running | 1. Start the program
+2. Enter option `4` | Display `Exiting the program. Goodbye!` and terminate the program |  |  |  |
+| TC-07 | Data access separation | Application is running | 1. Execute a balance query, credit, or debit operation
+2. Confirm `DataProgram` is called for data access | `Operations` should call `DataProgram` for `READ` or `WRITE`, and `DataProgram` should maintain the account balance state |  |  |  |
+| TC-08 | Initial balance consistency | First application run | 1. Start the program
+2. Enter option `1` | Display initial balance `1000.00` |  |  |  |
 
-## 使用建議
-- 將每個測試案例轉換成 Node.js 單元測試與整合測試時，請以業務規則為基礎：
-  - 查詢返回當前餘額
-  - 存款會增加餘額並將更新儲存
-  - 提款需先檢查餘額，若不足則拒絕交易
-  - 非法選項不應終止程式
-  - 離開選項應結束程式
-- 實際結果與狀態欄位可用於執行手動驗證時記錄發現。
+## Notes for Node.js Test Conversion
+- Use the business logic as the basis for Node.js unit tests:
+  - Balance query returns the current balance
+  - Credit increases the balance and persists the change
+  - Debit checks balance before withdrawal and rejects if insufficient
+  - Invalid menu choices do not terminate the application
+  - Exit choice terminates the session cleanly
+- Use the Actual Result and Status columns for manual validation and stakeholder review.
